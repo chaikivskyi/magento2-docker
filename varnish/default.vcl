@@ -19,7 +19,7 @@ backend default {
 }
 
 acl purge {
-    "172.20.0.3";
+    "php";
 }
 
 sub vcl_recv {
