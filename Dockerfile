@@ -25,7 +25,8 @@ RUN docker-php-ext-install bcmath \
     soap \
     xsl \
     zip \
-    pdo_mysql
+    pdo_mysql \
+    mcrypt
 
 WORKDIR /var/www/html
 
