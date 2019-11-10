@@ -40,6 +40,11 @@ services:
     links:
       - nginx
       - php
+  redis:
+    image: redis
+    container_name: redis
+    expose:
+      - 6379
   adminer:
     image: adminer
     container_name: adminer
