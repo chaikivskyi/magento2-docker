@@ -9,6 +9,8 @@ RUN apt-get update && apt-get install -y \
     git \
     vim \
     re2c \
+    sendmail-bin \
+    sendmail \
     autoconf \
     automake \
     shtool \
@@ -22,7 +24,8 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libpcre3-dev \
     libssl-dev \
-    libtool
+    libtool \
+    libzip-dev
 
 RUN docker-php-ext-configure gd \
     --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/;
@@ -35,21 +38,25 @@ RUN docker-php-ext-install bcmath \
     soap \
     xsl \
     zip \
-    pdo_mysql
+    pdo_mysql \
+    opcache
 
-RUN pecl install xdebug && docker-php-ext-enable xdebug
+RUN pecl install -o -f \
+    apcu
+
+RUN docker-php-ext-enable apcu
 
 WORKDIR /var/www/html
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-COPY ./src /var/www/html
-
-RUN chown -R www-data:www-data /var/www/html \
+RUN chown -R www-data:www-data ./ \
     && mkdir -p /tmp/xdebug/profile \
     && mkdir -p /tmp/xdebug/trace \
-    && chown -R www-data:www-data /tmp/ \
     && apt-get -y autoremove \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN ["chmod", "+x", "/docker-entrypoint.sh"]
+ENTRYPOINT ["/docker-entrypoint.sh"]

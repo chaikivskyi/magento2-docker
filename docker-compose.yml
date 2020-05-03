@@ -16,6 +16,7 @@ services:
       args:
         - PHP_VERSION=${PHP_VERSION}
     container_name: php
+    hostname: ${HOSTNAME}
     volumes:
       - ./src:/var/www/html
       - ./config/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
@@ -23,7 +24,7 @@ services:
     links:
       - db
   db:
-    image: ${DB_TYPE}:${DB_VERSION}
+    image: mariadb:${DB_VERSION}
     container_name: db
     restart: always
     ports:
