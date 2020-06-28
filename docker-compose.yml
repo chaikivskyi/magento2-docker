@@ -1,4 +1,4 @@
-version: '3'
+version: '3.2'
 services:
   nginx:
     image: nginx:${NGINX_VERSION}
@@ -7,9 +7,10 @@ services:
       - 80:80
     volumes:
       - ./config/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+      - ./config/nginx/nginx.conf:/etc/nginx/nginx.magento.conf
       - ./src:/var/www/html
-    links:
-      - php
+    networks:
+      - app-network
   php:
     build:
       context: ./
@@ -22,8 +23,8 @@ services:
       - ${MAGENTO_PATH}:/var/www/html
       - ./config/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
       - ./data:/tmp/xdebug
-    links:
-      - db
+    networks:
+      - app-network
   db:
     image: mariadb:${DB_VERSION}
     container_name: db
@@ -32,21 +33,26 @@ services:
       - 3306:3306
     env_file:
       - .env
+    networks:
+      - app-network
 #  varnish:
-#    build: ./varnish
+#    build: ./config/varnish
 #    ports:
 #      - 80:80
 #    volumes:
-#      - ./varnish/default.vcl:/etc/varnish/default.vcl
+#      - ./config/varnish/default.vcl:/etc/varnish/default.vcl
 #    container_name: varnish
-#    links:
-#      - nginx
-#      - php
+#    depends_on:
+#      - redis
+#    networks:
+#      - app-network
 #  redis:
 #    image: redis
 #    container_name: redis
 #    expose:
 #      - 6379
+#    networks:
+#      - app-network
 #  elasticsearch:
 #    image: elasticsearch:${ELASTICSEARCH_VERSION}
 #    container_name: elasticsearch
@@ -57,11 +63,16 @@ services:
 #    environment:
 #      - "bootstrap.memory_lock=true"
 #      - "discovery.type=single-node"
+#    networks:
+#      - app-network
   adminer:
     image: adminer
     container_name: adminer
     restart: always
     ports:
       - 8000:8080
-    links:
-      - db
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
