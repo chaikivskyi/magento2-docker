@@ -12,13 +12,11 @@ services:
     networks:
       - app-network
   php:
-    build:
-      context: ./
-      args:
-        - PHP_VERSION=${PHP_VERSION}
-        - ENABLE_XDEBUG=${ENABLE_XDEBUG}
+    image: pchaikivskyi/magento2-php:${PHP_VERSION}
     container_name: php
     hostname: ${HOSTNAME}
+    env_file:
+      - .env
     volumes:
       - web-root:/var/www/html:cached
       - ./config/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini:cached
