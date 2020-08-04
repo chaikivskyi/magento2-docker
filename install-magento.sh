@@ -16,4 +16,5 @@ docker-compose exec php bash -c 'bin/magento setup:install '\
 '--timezone=America/Chicago '\
 '--use-rewrites=1 '\
 '--elasticsearch-host=elasticsearch '\
-'--elasticsearch-port=9200'
+'--elasticsearch-port=9200 ' \
+'--search-engine=elasticsearch7'
