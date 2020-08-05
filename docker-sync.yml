@@ -1,0 +1,7 @@
+version: "2"
+options:
+  verbose: true
+syncs:
+  web-root:
+    src: ${MAGENTO_PATH}
+    sync_excludes: ['.git', '.idea']

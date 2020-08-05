@@ -1,0 +1,3 @@
+     command  docker volume create --opt type=none --opt device="/var/www/html/magento24" --opt o=bind --name web-root
+     success  Docker volume for web-root created
+     success  Watcher disabled by configuration
