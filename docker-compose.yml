@@ -75,7 +75,8 @@ networks:
   app-network:
     driver: bridge
 volumes:
-  driver: local
+  web-root:
+    driver: local
     driver_opts:
       type: nfs
       device: ${MAGENTO_PATH}
