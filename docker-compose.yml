@@ -1,4 +1,4 @@
-version: '3.2'
+version: '3.5'
 services:
   nginx:
     image: nginx:${NGINX_VERSION}
@@ -13,13 +13,11 @@ services:
       - ssl-cert:/var/www/cert
     networks:
       - app-network
+    depends_on:
+      - ssl
   php:
-    build:
-      context: ./
-      args:
-        - PHP_VERSION=${PHP_VERSION}
-        - ENABLE_XDEBUG=${ENABLE_XDEBUG}
     container_name: php
+    image: pchaikivskyi/magento2-php:${PHP_VERSION}
     hostname: ${HOSTNAME}
     volumes:
       - web-root:/var/www/html
@@ -55,18 +53,18 @@ services:
 #      - 6379
 #    networks:
 #      - app-network
-#  elasticsearch:
-#    image: elasticsearch:${ELASTICSEARCH_VERSION}
-#    container_name: elasticsearch
-#    ports:
-#      - 9200:9200
-#    env_file:
-#      - .env
-#    environment:
-#      - "bootstrap.memory_lock=true"
-#      - "discovery.type=single-node"
-#    networks:
-#      - app-network
+  elasticsearch:
+    image: elasticsearch:${ELASTICSEARCH_VERSION}
+    container_name: elasticsearch
+    ports:
+      - 9200:9200
+    env_file:
+      - .env
+    environment:
+      - "bootstrap.memory_lock=true"
+      - "discovery.type=single-node"
+    networks:
+      - app-network
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin
@@ -82,9 +80,6 @@ services:
     working_dir: /var/www/cert
     volumes:
       - ssl-cert:/var/www/cert
-    depends_on:
-      - nginx
-    command: mkcert -cert-file magento.crt -key-file magento.key "${HOSTNAME}"
 networks:
   app-network:
     driver: bridge
@@ -98,6 +93,6 @@ volumes:
   web-root:
     driver: local
     driver_opts:
-      type: none
+      type: nfs
       device: ${MAGENTO_PATH}
       o: bind
