@@ -19,6 +19,8 @@ services:
     container_name: php
     image: pchaikivskyi/magento2-php:${PHP_VERSION}
     hostname: ${HOSTNAME}
+    env_file:
+      - .env
     volumes:
       - web-root:/var/www/html
       - ./config/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
@@ -35,6 +37,8 @@ services:
       - .env
     networks:
       - app-network
+    volumes:
+      - db-data:/var/lib/mysql
 #  varnish:
 #    build: ./config/varnish
 #    ports:
@@ -61,7 +65,6 @@ services:
     env_file:
       - .env
     environment:
-      - "bootstrap.memory_lock=true"
       - "discovery.type=single-node"
     networks:
       - app-network
@@ -95,4 +98,10 @@ volumes:
     driver_opts:
       type: nfs
       device: ${MAGENTO_PATH}
+      o: bind
+  db-data:
+    driver: local
+    driver_opts:
+      type: nfs
+      device: ${PWD}/data/db
       o: bind

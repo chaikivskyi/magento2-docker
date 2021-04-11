@@ -1,3 +1,11 @@
 .idea/
 .phpintel/
 src/*
+/data/profile/*
+/data/trace/*
+/data/db/*
+/data/cert/*
+!/data/profile/.gitkeep
+!/data/cert/.gitkeep
+!/data/db/.gitkeep
+!/data/trace/.gitkeep
