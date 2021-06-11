@@ -37,8 +37,6 @@ services:
       - .env
     networks:
       - app-network
-    volumes:
-      - db-data:/var/lib/mysql
 #  varnish:
 #    build: ./config/varnish
 #    ports:
@@ -98,10 +96,4 @@ volumes:
     driver_opts:
       type: nfs
       device: ${MAGENTO_PATH}
-      o: bind
-  db-data:
-    driver: local
-    driver_opts:
-      type: nfs
-      device: ${PWD}/data/db
       o: bind
